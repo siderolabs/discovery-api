@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sidero.discovery.client;
 
-option go_package = "github.com/talos-systems/discovery-api/api/v1alpha1/client/pb";
+option go_package = "github.com/siderolabs/discovery-api/api/v1alpha1/client/pb";
 
 // Affiliate protobuf spec, as seen internally in the client code.
 //

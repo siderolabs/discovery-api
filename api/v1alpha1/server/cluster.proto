@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sidero.discovery.server;
 
-option go_package = "github.com/talos-systems/discovery-api/api/v1alpha1/server/pb";
+option go_package = "github.com/siderolabs/discovery-api/api/v1alpha1/server/pb";
 
 import "vendor/google/duration.proto";
 

@@ -1,5 +1,5 @@
 ---
-kind: golang.Protobuf
+kind: golang.Generate
 spec:
   vtProtobufEnabled: true
   specs:

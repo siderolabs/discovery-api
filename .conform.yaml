@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2021-10-12T20:37:13Z by kres 2a27963-dirty.
+# Generated on 2022-09-15T11:10:38Z by kres 2e9342e.
 
 ---
 policies:
@@ -10,7 +10,7 @@ policies:
     gpg:
       required: true
       identity:
-        gitHubOrganization: talos-systems
+        gitHubOrganization: siderolabs
     spellcheck:
       locale: US
     maximumOfOneCommit: true
@@ -28,12 +28,10 @@ policies:
   spec:
     skipPaths:
       - .git/
+      - testdata/
     includeSuffixes:
       - .go
     excludeSuffixes:
       - .pb.go
       - .pb.gw.go
-    header: |
-      // This Source Code Form is subject to the terms of the Mozilla Public
-      // License, v. 2.0. If a copy of the MPL was not distributed with this
-      // file, You can obtain one at http://mozilla.org/MPL/2.0/.
+    header: "// This Source Code Form is subject to the terms of the Mozilla Public\u000A// License, v. 2.0. If a copy of the MPL was not distributed with this\u000A// file, You can obtain one at http://mozilla.org/MPL/2.0/.\u000A"
