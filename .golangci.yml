@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2022-09-15T11:10:38Z by kres 2e9342e.
+# Generated on 2023-05-24T22:20:53Z by kres latest.
 
 # options for analysis running
 run:
@@ -36,7 +36,7 @@ linters-settings:
     lines: 60
     statements: 40
   gci:
-    local-prefixes: github.com/siderolabs/discovery-api
+    local-prefixes: github.com/siderolabs/discovery-api/
   gocognit:
     min-complexity: 30
   ireturn:
@@ -65,7 +65,7 @@ linters-settings:
   gofmt:
     simplify: true
   goimports:
-    local-prefixes: github.com/siderolabs/discovery-api
+    local-prefixes: github.com/siderolabs/discovery-api/
   golint:
     min-confidence: 0.8
   gomnd:
@@ -150,6 +150,12 @@ linters:
     - maligned
     - golint
     - scopelint
+    - varcheck
+    - deadcode
+    - structcheck
+    - ifshort
+    # disabled as it seems to be broken - goes into imported libraries and reports issues there
+    - musttag
 
 issues:
   exclude: []

@@ -16,6 +16,7 @@ message Affiliate {
     string machine_type = 5;
     string operating_system = 6;
     optional KubeSpan kubespan = 7;
+    optional ControlPlane control_plane = 8;
 }
 
 // KubeSpan optional configuration.
@@ -39,4 +40,9 @@ message Endpoint {
     // IPs are encoded using binary marshaling.
     bytes ip = 1;
     uint32 port = 2;
+}
+
+// ControlPlane optional configuration.
+message ControlPlane {
+    uint32 api_server_port = 1;
 }
