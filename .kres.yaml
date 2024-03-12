@@ -10,3 +10,7 @@ spec:
       subdirectory: v1alpha1/server/pb
     - source: api/v1alpha1/client/affiliate.proto
       subdirectory: v1alpha1/client/pb
+---
+kind: service.CodeCov
+spec:
+  enabled: false

@@ -1,6 +1,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2023-05-24T22:20:53Z by kres latest.
+# Generated on 2024-03-12T12:26:58Z by kres latest.
 
 # options for analysis running
 run:
@@ -74,9 +74,6 @@ linters-settings:
   govet:
     check-shadowing: true
     enable-all: true
-  depguard:
-    list-type: blacklist
-    include-go-root: false
   lll:
     line-length: 200
     tab-width: 4
@@ -118,6 +115,10 @@ linters-settings:
   cyclop:
       # the maximal code complexity to report
       max-complexity: 20
+  #  depguard:
+  #    Main:
+  #      deny:
+  #        - github.com/OpenPeeDeeP/depguard # this is just an example
 
 linters:
   enable-all: true
@@ -145,6 +146,12 @@ linters:
     - typecheck
     - varnamelen
     - wrapcheck
+    - depguard # Disabled because starting with golangci-lint 1.53.0 it doesn't allow denylist alone anymore
+    - tagalign
+    - inamedparam
+    - testifylint # complains about our assert recorder and has a number of false positives for assert.Greater(t, thing, 1)
+    - protogetter # complains about us using Value field on typed spec, instead of GetValue which has a different signature
+    - perfsprint # complains about us using fmt.Sprintf in non-performance critical code, updating just kres took too long
     # abandoned linters for which golangci shows the warning that the repo is archived by the owner
     - interfacer
     - maligned

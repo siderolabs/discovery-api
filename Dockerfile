@@ -1,15 +1,15 @@
-# syntax = docker/dockerfile-upstream:1.5.2-labs
+# syntax = docker/dockerfile-upstream:1.7.0-labs
 
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2023-05-24T22:20:53Z by kres latest.
+# Generated on 2024-03-12T12:26:58Z by kres latest.
 
 ARG TOOLCHAIN
 
 # runs markdownlint
-FROM docker.io/node:20.2.0-alpine3.17 AS lint-markdown
+FROM docker.io/node:21.7.1-alpine3.19 AS lint-markdown
 WORKDIR /src
-RUN npm i -g markdownlint-cli@0.34.0
+RUN npm i -g markdownlint-cli@0.39.0
 RUN npm i sentences-per-line@0.2.1
 COPY .markdownlint.json .
 COPY ./README.md ./README.md
@@ -30,6 +30,10 @@ FROM --platform=${BUILDPLATFORM} toolchain AS tools
 ENV GO111MODULE on
 ARG CGO_ENABLED
 ENV CGO_ENABLED ${CGO_ENABLED}
+ARG GOTOOLCHAIN
+ENV GOTOOLCHAIN ${GOTOOLCHAIN}
+ARG GOEXPERIMENT
+ENV GOEXPERIMENT ${GOEXPERIMENT}
 ENV GOPATH /go
 ARG PROTOBUF_GO_VERSION
 RUN --mount=type=cache,target=/root/.cache/go-build --mount=type=cache,target=/go/pkg go install google.golang.org/protobuf/cmd/protoc-gen-go@v${PROTOBUF_GO_VERSION}
@@ -72,7 +76,7 @@ RUN --mount=type=cache,target=/go/pkg go list -mod=readonly all >/dev/null
 # runs protobuf compiler
 FROM tools AS proto-compile
 COPY --from=proto-specs / /
-RUN protoc -I/api --go_out=paths=source_relative:/api --go-grpc_out=paths=source_relative:/api --go-vtproto_out=paths=source_relative:/api --go-vtproto_opt=features=marshal+unmarshal+size+equal /api/v1alpha1/server/pb/cluster.proto /api/v1alpha1/client/pb/affiliate.proto
+RUN protoc -I/api --go_out=paths=source_relative:/api --go-grpc_out=paths=source_relative:/api --go-vtproto_out=paths=source_relative:/api --go-vtproto_opt=features=marshal+unmarshal+size+equal+clone /api/v1alpha1/server/pb/cluster.proto /api/v1alpha1/client/pb/affiliate.proto
 RUN rm /api/v1alpha1/server/pb/cluster.proto
 RUN rm /api/v1alpha1/client/pb/affiliate.proto
 RUN goimports -w -local github.com/siderolabs/discovery-api /api
