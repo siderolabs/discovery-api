@@ -1,18 +1,18 @@
-# syntax = docker/dockerfile-upstream:1.10.0-labs
+# syntax = docker/dockerfile-upstream:1.12.1-labs
 
 # THIS FILE WAS AUTOMATICALLY GENERATED, PLEASE DO NOT EDIT.
 #
-# Generated on 2024-10-22T09:21:00Z by kres 6d3cad4.
+# Generated on 2025-02-26T11:05:30Z by kres 1281806.
 
 ARG TOOLCHAIN
 
 # runs markdownlint
-FROM docker.io/oven/bun:1.1.32-alpine AS lint-markdown
+FROM docker.io/oven/bun:1.1.43-alpine AS lint-markdown
 WORKDIR /src
-RUN bun i markdownlint-cli@0.42.0 sentences-per-line@0.2.1
+RUN bun i markdownlint-cli@0.43.0 sentences-per-line@0.3.0
 COPY .markdownlint.json .
 COPY ./README.md ./README.md
-RUN bunx markdownlint --ignore "CHANGELOG.md" --ignore "**/node_modules/**" --ignore '**/hack/chglog/**' --rules node_modules/sentences-per-line/index.js .
+RUN bunx markdownlint --ignore "CHANGELOG.md" --ignore "**/node_modules/**" --ignore '**/hack/chglog/**' --rules sentences-per-line .
 
 # collects proto specs
 FROM scratch AS proto-specs
