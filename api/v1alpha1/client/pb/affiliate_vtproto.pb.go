@@ -70,6 +70,11 @@ func (m *KubeSpan) CloneVT() *KubeSpan {
 		}
 		r.AdditionalAddresses = tmpContainer
 	}
+	if rhs := m.AdvertisedFilter; rhs != nil {
+		tmpContainer := make([]string, len(rhs))
+		copy(tmpContainer, rhs)
+		r.AdvertisedFilter = tmpContainer
+	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
 		copy(r.unknownFields, m.unknownFields)
@@ -215,6 +220,15 @@ func (this *KubeSpan) EqualVT(that *KubeSpan) bool {
 			if !p.EqualVT(q) {
 				return false
 			}
+		}
+	}
+	if len(this.AdvertisedFilter) != len(that.AdvertisedFilter) {
+		return false
+	}
+	for i, vx := range this.AdvertisedFilter {
+		vy := that.AdvertisedFilter[i]
+		if vx != vy {
+			return false
 		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -416,6 +430,15 @@ func (m *KubeSpan) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.AdvertisedFilter) > 0 {
+		for iNdEx := len(m.AdvertisedFilter) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.AdvertisedFilter[iNdEx])
+			copy(dAtA[i:], m.AdvertisedFilter[iNdEx])
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.AdvertisedFilter[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
 	}
 	if len(m.AdditionalAddresses) > 0 {
 		for iNdEx := len(m.AdditionalAddresses) - 1; iNdEx >= 0; iNdEx-- {
@@ -635,6 +658,12 @@ func (m *KubeSpan) SizeVT() (n int) {
 	if len(m.AdditionalAddresses) > 0 {
 		for _, e := range m.AdditionalAddresses {
 			l = e.SizeVT()
+			n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+		}
+	}
+	if len(m.AdvertisedFilter) > 0 {
+		for _, s := range m.AdvertisedFilter {
+			l = len(s)
 			n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 		}
 	}
@@ -1132,6 +1161,38 @@ func (m *KubeSpan) UnmarshalVT(dAtA []byte) error {
 			if err := m.AdditionalAddresses[len(m.AdditionalAddresses)-1].UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AdvertisedFilter", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AdvertisedFilter = append(m.AdvertisedFilter, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

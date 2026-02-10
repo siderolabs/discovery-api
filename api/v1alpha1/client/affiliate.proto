@@ -24,6 +24,11 @@ message KubeSpan {
     string public_key = 1;
     bytes address = 2;
     repeated IPPrefix additional_addresses = 3;
+    // Advertised filter is a list of filter expressions ("(!?)<cidr>") applied
+    // to the additional_addresses and addresses.
+    // If the expression starts with "!", the corresponding address is excluded.
+    // Only addresses passing the filter are advertised to other peers.
+    repeated string advertised_filter = 4;
 }
 
 // IPPrefix contains CIDR.
