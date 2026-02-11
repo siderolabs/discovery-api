@@ -70,10 +70,12 @@ func (m *KubeSpan) CloneVT() *KubeSpan {
 		}
 		r.AdditionalAddresses = tmpContainer
 	}
-	if rhs := m.AdvertisedFilter; rhs != nil {
-		tmpContainer := make([]string, len(rhs))
-		copy(tmpContainer, rhs)
-		r.AdvertisedFilter = tmpContainer
+	if rhs := m.ExcludeAdvertisedAddresses; rhs != nil {
+		tmpContainer := make([]*IPPrefix, len(rhs))
+		for k, v := range rhs {
+			tmpContainer[k] = v.CloneVT()
+		}
+		r.ExcludeAdvertisedAddresses = tmpContainer
 	}
 	if len(m.unknownFields) > 0 {
 		r.unknownFields = make([]byte, len(m.unknownFields))
@@ -222,13 +224,21 @@ func (this *KubeSpan) EqualVT(that *KubeSpan) bool {
 			}
 		}
 	}
-	if len(this.AdvertisedFilter) != len(that.AdvertisedFilter) {
+	if len(this.ExcludeAdvertisedAddresses) != len(that.ExcludeAdvertisedAddresses) {
 		return false
 	}
-	for i, vx := range this.AdvertisedFilter {
-		vy := that.AdvertisedFilter[i]
-		if vx != vy {
-			return false
+	for i, vx := range this.ExcludeAdvertisedAddresses {
+		vy := that.ExcludeAdvertisedAddresses[i]
+		if p, q := vx, vy; p != q {
+			if p == nil {
+				p = &IPPrefix{}
+			}
+			if q == nil {
+				q = &IPPrefix{}
+			}
+			if !p.EqualVT(q) {
+				return false
+			}
 		}
 	}
 	return string(this.unknownFields) == string(that.unknownFields)
@@ -431,11 +441,14 @@ func (m *KubeSpan) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.AdvertisedFilter) > 0 {
-		for iNdEx := len(m.AdvertisedFilter) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.AdvertisedFilter[iNdEx])
-			copy(dAtA[i:], m.AdvertisedFilter[iNdEx])
-			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.AdvertisedFilter[iNdEx])))
+	if len(m.ExcludeAdvertisedAddresses) > 0 {
+		for iNdEx := len(m.ExcludeAdvertisedAddresses) - 1; iNdEx >= 0; iNdEx-- {
+			size, err := m.ExcludeAdvertisedAddresses[iNdEx].MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
 			i--
 			dAtA[i] = 0x22
 		}
@@ -661,9 +674,9 @@ func (m *KubeSpan) SizeVT() (n int) {
 			n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 		}
 	}
-	if len(m.AdvertisedFilter) > 0 {
-		for _, s := range m.AdvertisedFilter {
-			l = len(s)
+	if len(m.ExcludeAdvertisedAddresses) > 0 {
+		for _, e := range m.ExcludeAdvertisedAddresses {
+			l = e.SizeVT()
 			n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 		}
 	}
@@ -1164,9 +1177,9 @@ func (m *KubeSpan) UnmarshalVT(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AdvertisedFilter", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ExcludeAdvertisedAddresses", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -1176,23 +1189,25 @@ func (m *KubeSpan) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return protohelpers.ErrInvalidLength
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return protohelpers.ErrInvalidLength
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AdvertisedFilter = append(m.AdvertisedFilter, string(dAtA[iNdEx:postIndex]))
+			m.ExcludeAdvertisedAddresses = append(m.ExcludeAdvertisedAddresses, &IPPrefix{})
+			if err := m.ExcludeAdvertisedAddresses[len(m.ExcludeAdvertisedAddresses)-1].UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

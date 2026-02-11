@@ -132,13 +132,14 @@ type KubeSpan struct {
 	PublicKey           string                 `protobuf:"bytes,1,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	Address             []byte                 `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	AdditionalAddresses []*IPPrefix            `protobuf:"bytes,3,rep,name=additional_addresses,json=additionalAddresses,proto3" json:"additional_addresses,omitempty"`
-	// Advertised filter is a list of filter expressions ("(!?)<cidr>") applied
-	// to the additional_addresses and addresses.
-	// If the expression starts with "!", the corresponding address is excluded.
-	// Only addresses passing the filter are advertised to other peers.
-	AdvertisedFilter []string `protobuf:"bytes,4,rep,name=advertised_filter,json=advertisedFilter,proto3" json:"advertised_filter,omitempty"`
-	unknownFields    protoimpl.UnknownFields
-	sizeCache        protoimpl.SizeCache
+	// ExcludeAdvertisedAddresses is used to exclude some of the addresses & additional addresses from being advertised to other affiliates.
+	//
+	// The final set of advertised subnets will be calculated as (addresses + additional_addresses) - exclude_advertised_addresses.
+	//
+	// If the list is empty, no exclusion is performed, and the full set is advertised.
+	ExcludeAdvertisedAddresses []*IPPrefix `protobuf:"bytes,4,rep,name=exclude_advertised_addresses,json=excludeAdvertisedAddresses,proto3" json:"exclude_advertised_addresses,omitempty"`
+	unknownFields              protoimpl.UnknownFields
+	sizeCache                  protoimpl.SizeCache
 }
 
 func (x *KubeSpan) Reset() {
@@ -192,9 +193,9 @@ func (x *KubeSpan) GetAdditionalAddresses() []*IPPrefix {
 	return nil
 }
 
-func (x *KubeSpan) GetAdvertisedFilter() []string {
+func (x *KubeSpan) GetExcludeAdvertisedAddresses() []*IPPrefix {
 	if x != nil {
-		return x.AdvertisedFilter
+		return x.ExcludeAdvertisedAddresses
 	}
 	return nil
 }
@@ -369,13 +370,13 @@ const file_v1alpha1_client_pb_affiliate_proto_rawDesc = "" +
 	"\bkubespan\x18\a \x01(\v2!.sidero.discovery.client.KubeSpanH\x00R\bkubespan\x88\x01\x01\x12O\n" +
 	"\rcontrol_plane\x18\b \x01(\v2%.sidero.discovery.client.ControlPlaneH\x01R\fcontrolPlane\x88\x01\x01B\v\n" +
 	"\t_kubespanB\x10\n" +
-	"\x0e_control_plane\"\xc6\x01\n" +
+	"\x0e_control_plane\"\xfe\x01\n" +
 	"\bKubeSpan\x12\x1d\n" +
 	"\n" +
 	"public_key\x18\x01 \x01(\tR\tpublicKey\x12\x18\n" +
 	"\aaddress\x18\x02 \x01(\fR\aaddress\x12T\n" +
-	"\x14additional_addresses\x18\x03 \x03(\v2!.sidero.discovery.client.IPPrefixR\x13additionalAddresses\x12+\n" +
-	"\x11advertised_filter\x18\x04 \x03(\tR\x10advertisedFilter\".\n" +
+	"\x14additional_addresses\x18\x03 \x03(\v2!.sidero.discovery.client.IPPrefixR\x13additionalAddresses\x12c\n" +
+	"\x1cexclude_advertised_addresses\x18\x04 \x03(\v2!.sidero.discovery.client.IPPrefixR\x1aexcludeAdvertisedAddresses\".\n" +
 	"\bIPPrefix\x12\x0e\n" +
 	"\x02ip\x18\x01 \x01(\fR\x02ip\x12\x12\n" +
 	"\x04bits\x18\x02 \x01(\rR\x04bits\".\n" +
@@ -409,11 +410,12 @@ var file_v1alpha1_client_pb_affiliate_proto_depIdxs = []int32{
 	1, // 0: sidero.discovery.client.Affiliate.kubespan:type_name -> sidero.discovery.client.KubeSpan
 	4, // 1: sidero.discovery.client.Affiliate.control_plane:type_name -> sidero.discovery.client.ControlPlane
 	2, // 2: sidero.discovery.client.KubeSpan.additional_addresses:type_name -> sidero.discovery.client.IPPrefix
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	2, // 3: sidero.discovery.client.KubeSpan.exclude_advertised_addresses:type_name -> sidero.discovery.client.IPPrefix
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_v1alpha1_client_pb_affiliate_proto_init() }
